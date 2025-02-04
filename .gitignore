@@ -1,0 +1,13 @@
+# Ignore .env files inside each service
+services/*/.env
+
+# Ignore all .env files recursively inside subfolders of services/
+services/**/.env
+
+# (Optional) Ignore logs, temp files, and other sensitive files
+*.log
+.env
+*.DS_Store
+
+# Ignore Go workspace sum file
+go.work.sum
