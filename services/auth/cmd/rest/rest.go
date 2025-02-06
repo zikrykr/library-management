@@ -14,7 +14,7 @@ import (
 	appSetup "github.com/zikrykr/library-management/services/auth/cmd/setup"
 	"github.com/zikrykr/library-management/services/auth/config"
 	"github.com/zikrykr/library-management/services/auth/constants"
-	"github.com/zikrykr/library-management/services/auth/middleware"
+	"github.com/zikrykr/library-management/shared/middleware"
 )
 
 // BaseURL base url of api
@@ -40,7 +40,7 @@ func StartServer(setupData appSetup.SetupData) {
 	// init public route
 	initPublicRoute(router, setupData.InternalApp)
 
-	// router.Use(middleware.JwtAuthMiddleware())
+	router.Use(middleware.JwtAuthMiddleware(conf.App.JWTSecret))
 
 	//Init Main APP and Route
 	initRoute(router, setupData.InternalApp)
