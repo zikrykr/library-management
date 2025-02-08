@@ -64,12 +64,12 @@ func (r repository) GetBooks(ctx context.Context, req payload.GetBooksReq) ([]mo
 
 	query := r.db.WithContext(ctx).Scopes(fScopes...)
 
-	if err := query.Offset(offset).Limit(req.Limit).Order(req.SortBy).Find(&res).Error; err != nil {
-		return res, totalRecords, err
-	}
-
 	if err := query.Model(&model.Book{}).Count(&totalRecords).Error; err != nil {
 		return res, 0, err
+	}
+
+	if err := query.Offset(offset).Limit(req.Limit).Order(req.SortBy).Find(&res).Error; err != nil {
+		return res, totalRecords, err
 	}
 
 	return res, totalRecords, nil

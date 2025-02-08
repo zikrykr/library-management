@@ -1,6 +1,8 @@
 package pkg
 
-import "math"
+import (
+	"math"
+)
 
 const maxLimit, defaultLimit int = 1000, 10
 
