@@ -6,14 +6,16 @@ import (
 )
 
 type (
-	categoryRoutes struct{}
+	routes      struct{}
+	adminRoutes struct{}
 )
 
 var (
-	Routes categoryRoutes
+	Routes      routes
+	AdminRoutes adminRoutes
 )
 
-func (r categoryRoutes) NewRoutes(router *gin.RouterGroup, categoryHandler port.ICategoryHandler) {
+func (r adminRoutes) NewAdminRoutes(router *gin.RouterGroup, categoryHandler port.ICategoryHandler) {
 	// get categories
 	router.GET("", categoryHandler.GetCategories)
 	// get categories by id
@@ -24,4 +26,11 @@ func (r categoryRoutes) NewRoutes(router *gin.RouterGroup, categoryHandler port.
 	router.PUT("/:id", categoryHandler.UpdateCategory)
 	// delete categories
 	router.DELETE("/:id", categoryHandler.DeleteCategoryByID)
+}
+
+func (r routes) NewRoutes(router *gin.RouterGroup, categoryHandler port.ICategoryHandler) {
+	// get categories
+	router.GET("", categoryHandler.GetCategories)
+	// get categories by id
+	router.GET("/:id", categoryHandler.GetCategoryByID)
 }

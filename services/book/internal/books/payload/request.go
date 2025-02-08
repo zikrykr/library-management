@@ -1,12 +1,14 @@
 package payload
 
 type CreateBookReq struct {
-	Title         string `json:"title" binding:"required"`
-	Description   string `json:"description" binding:"required"`
-	ISBN          string `json:"isbn" binding:"required"`
-	AuthorID      string `json:"author_id" binding:"required"`
-	CategoryID    string `json:"category_id" binding:"required"`
-	PublishedYear int    `json:"published_year" binding:"required"`
+	Title          string `json:"title" binding:"required"`
+	Description    string `json:"description" binding:"required"`
+	ISBN           string `json:"isbn" binding:"required"`
+	AuthorID       string `json:"author_id" binding:"required"`
+	CategoryID     string `json:"category_id" binding:"required"`
+	PublishedYear  int    `json:"published_year" binding:"required"`
+	TotalStock     int    `json:"total_stock"`
+	AvailableStock int    `json:"available_stock"`
 }
 
 type UpdateBookReq struct {

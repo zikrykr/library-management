@@ -41,9 +41,13 @@ func StartServer(setupData appSetup.SetupData) {
 
 	router.Use(middleware.CORSMiddleware())
 	router.Use(middleware.JwtAuthMiddleware(conf.App.JWTSecret))
-	router.Use(middleware.CheckAdminRole())
 
 	//Init Main APP and Route
+	initRoute(router, setupData.InternalApp)
+
+	router.Use(middleware.CheckAdminRole())
+
+	//Init Admin Route
 	initAdminRoute(router, setupData.InternalApp)
 
 	port := config.GetConfig().Http.Port
@@ -83,5 +87,10 @@ func StartServer(setupData appSetup.SetupData) {
 
 func initAdminRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
 	r := router.Group(BaseURLAdmin)
+	categoryRoutes.AdminRoutes.NewAdminRoutes(r, internalAppStruct.Handler.CategoryHandler)
+}
+
+func initRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
+	r := router.Group(BaseURL)
 	categoryRoutes.Routes.NewRoutes(r, internalAppStruct.Handler.CategoryHandler)
 }

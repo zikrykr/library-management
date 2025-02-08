@@ -27,7 +27,8 @@ type InternalAppStruct struct {
 type initRepositoriesApp struct {
 	dbInstance *gorm.DB
 
-	BookRepo port.IBookRepo
+	BookRepo      port.IBookRepo
+	BookStockRepo port.IBookStockRepo
 }
 
 // Services
@@ -82,11 +83,12 @@ func initAppRepo(gormDB *db.GormDB, initializeApp *InternalAppStruct) {
 	// Get Gorm instance
 	initializeApp.Repositories.dbInstance = gormDB.DB
 
-	initializeApp.Repositories.BookRepo = bookRepo.NewRepository(gormDB)
+	initializeApp.Repositories.BookRepo = bookRepo.NewBookRepository(gormDB)
+	initializeApp.Repositories.BookStockRepo = bookRepo.NewBookStockRepository(gormDB)
 }
 
 func initAppService(initializeApp *InternalAppStruct) {
-	initializeApp.Services.BookService = bookService.NewBookService(initializeApp.Repositories.BookRepo)
+	initializeApp.Services.BookService = bookService.NewBookService(initializeApp.Repositories.dbInstance, initializeApp.Repositories.BookRepo, initializeApp.Repositories.BookStockRepo)
 }
 
 func initAppHandler(initializeApp *InternalAppStruct) {

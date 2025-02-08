@@ -7,18 +7,19 @@ import (
 	"github.com/zikrykr/library-management/services/book/internal/books/model"
 	"github.com/zikrykr/library-management/services/book/internal/books/payload"
 	"github.com/zikrykr/library-management/services/book/internal/books/port"
+	"github.com/zikrykr/library-management/shared/pkg"
 	"gorm.io/gorm"
 )
 
-type repository struct {
+type bookRepository struct {
 	db *db.GormDB
 }
 
-func NewRepository(db *db.GormDB) port.IBookRepo {
-	return repository{db: db}
+func NewBookRepository(db *db.GormDB) port.IBookRepo {
+	return bookRepository{db: db}
 }
 
-func (r repository) GetBooks(ctx context.Context, req payload.GetBooksReq) ([]model.Book, int64, error) {
+func (r bookRepository) GetBooks(ctx context.Context, req payload.GetBooksReq) ([]model.Book, int64, error) {
 	var (
 		res          []model.Book
 		fScopes      []func(db *gorm.DB) *gorm.DB
@@ -75,7 +76,7 @@ func (r repository) GetBooks(ctx context.Context, req payload.GetBooksReq) ([]mo
 	return res, totalRecords, nil
 }
 
-func (r repository) GetBookByID(ctx context.Context, id string) (model.Book, error) {
+func (r bookRepository) GetBookByID(ctx context.Context, id string) (model.Book, error) {
 	var res model.Book
 
 	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&res).Error; err != nil {
@@ -85,15 +86,20 @@ func (r repository) GetBookByID(ctx context.Context, id string) (model.Book, err
 	return res, nil
 }
 
-func (r repository) CreateBook(ctx context.Context, data model.Book) error {
-	if err := r.db.WithContext(ctx).Create(&data).Error; err != nil {
+func (r bookRepository) CreateBook(ctx context.Context, data model.Book) error {
+	tx, exists := pkg.GetTx(ctx)
+	if !exists {
+		tx = r.db.DB
+	}
+
+	if err := tx.WithContext(ctx).Create(&data).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (r repository) UpdateBook(ctx context.Context, id string, data model.Book) error {
+func (r bookRepository) UpdateBook(ctx context.Context, id string, data model.Book) error {
 	if err := r.db.WithContext(ctx).Model(&model.Book{}).Where("id = ?", id).Updates(data).Error; err != nil {
 		return err
 	}
@@ -101,7 +107,7 @@ func (r repository) UpdateBook(ctx context.Context, id string, data model.Book) 
 	return nil
 }
 
-func (r repository) DeleteBookByID(ctx context.Context, id string) error {
+func (r bookRepository) DeleteBookByID(ctx context.Context, id string) error {
 	if err := r.db.WithContext(ctx).Where("id = ?", id).Delete(&model.Book{}).Error; err != nil {
 		return err
 	}
