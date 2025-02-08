@@ -5,6 +5,11 @@ import (
 	"github.com/zikrykr/library-management/services/auth/config"
 	"github.com/zikrykr/library-management/services/auth/config/db"
 	"gorm.io/gorm"
+
+	authHandler "github.com/zikrykr/library-management/services/auth/internal/auth/handler"
+	authPorts "github.com/zikrykr/library-management/services/auth/internal/auth/port"
+	authrepo "github.com/zikrykr/library-management/services/auth/internal/auth/repository"
+	authService "github.com/zikrykr/library-management/services/auth/internal/auth/service"
 )
 
 type SetupData struct {
@@ -21,14 +26,21 @@ type InternalAppStruct struct {
 // Repositories
 type initRepositoriesApp struct {
 	dbInstance *gorm.DB
+	AuthRepo   authPorts.IAuthRepo
 }
 
 // Services
 type initServicesApp struct {
+	SignUpService  authPorts.ISignUpService
+	LoginService   authPorts.ILoginService
+	ProfileService authPorts.IProfileService
 }
 
 // Handler
 type InitHandlerApp struct {
+	SignUpHandler  authPorts.ISignUpHandler
+	LoginHandler   authPorts.ILoginHandler
+	ProfileHandler authPorts.IProfileHandler
 }
 
 // CloseDB close connection to db
@@ -72,10 +84,18 @@ func initInternalApp(gormDB *db.GormDB) InternalAppStruct {
 func initAppRepo(gormDB *db.GormDB, initializeApp *InternalAppStruct) {
 	// Get Gorm instance
 	initializeApp.Repositories.dbInstance = gormDB.DB
+
+	initializeApp.Repositories.AuthRepo = authrepo.NewRepository(gormDB)
 }
 
 func initAppService(initializeApp *InternalAppStruct) {
+	initializeApp.Services.SignUpService = authService.NewSignUpService(initializeApp.Repositories.AuthRepo)
+	initializeApp.Services.LoginService = authService.NewLoginService(initializeApp.Repositories.AuthRepo)
+	initializeApp.Services.ProfileService = authService.NewProfileService(initializeApp.Repositories.AuthRepo)
 }
 
 func initAppHandler(initializeApp *InternalAppStruct) {
+	initializeApp.Handler.SignUpHandler = authHandler.NewSignUpHandler(initializeApp.Services.SignUpService)
+	initializeApp.Handler.LoginHandler = authHandler.NewLoginHandler(initializeApp.Services.LoginService)
+	initializeApp.Handler.ProfileHandler = authHandler.NewProfileHandler(initializeApp.Services.ProfileService)
 }

@@ -14,6 +14,7 @@ import (
 	appSetup "github.com/zikrykr/library-management/services/auth/cmd/setup"
 	"github.com/zikrykr/library-management/services/auth/config"
 	"github.com/zikrykr/library-management/services/auth/constants"
+	authRoutes "github.com/zikrykr/library-management/services/auth/internal/auth/routes"
 	"github.com/zikrykr/library-management/shared/middleware"
 )
 
@@ -81,14 +82,11 @@ func StartServer(setupData appSetup.SetupData) {
 }
 
 func initRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
-	// r := router.Group(BaseURL)
-	// recommendationRoutes.Routes.NewRoutes(r.Group("/recommendations"), internalAppStruct.Handler.RecommendationHandler)
-	// swipeRoutes.Routes.NewRoutes(r.Group("/swipe"), internalAppStruct.Handler.SwipeHandler)
-	// authRoutes.Routes.NewRoutes(r.Group("/auth"), internalAppStruct.Handler.ProfileHandler)
-	// premiumRoutes.Routes.NewRoutes(r.Group("/premium"), internalAppStruct.Handler.PremiumHandler)
+	r := router.Group(BaseURL)
+	authRoutes.Routes.NewRoutes(r.Group("/auth"), internalAppStruct.Handler.ProfileHandler)
 }
 
 func initPublicRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
-	// r := router.Group(BaseURL)
-	// authRoutes.PublicRoutes.NewPublicRoutes(r.Group("/auth"), internalAppStruct.Handler.SignUpHandler, internalAppStruct.Handler.LoginHandler)
+	r := router.Group(BaseURL)
+	authRoutes.PublicRoutes.NewPublicRoutes(r.Group("/auth"), internalAppStruct.Handler.SignUpHandler, internalAppStruct.Handler.LoginHandler)
 }
