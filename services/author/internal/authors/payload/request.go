@@ -16,7 +16,6 @@ type GetAuthorsReq struct {
 
 	Name string `form:"name" json:"name"`
 
-	Search string `form:"keyword" json:"keyword"`
 	SortBy string `form:"sort" json:"sort"`
 	Page   int    `json:"page" form:"page" default:"1"`
 	Limit  int    `json:"limit" form:"limit" default:"15"`

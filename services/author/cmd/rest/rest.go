@@ -13,8 +13,8 @@ import (
 	"github.com/sirupsen/logrus"
 	appSetup "github.com/zikrykr/library-management/services/author/cmd/setup"
 	"github.com/zikrykr/library-management/services/author/config"
-	"github.com/zikrykr/library-management/services/author/constants"
 	authorRoutes "github.com/zikrykr/library-management/services/author/internal/authors/routes"
+	"github.com/zikrykr/library-management/shared/constants"
 	"github.com/zikrykr/library-management/shared/middleware"
 )
 

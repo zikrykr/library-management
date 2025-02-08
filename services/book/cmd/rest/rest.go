@@ -13,12 +13,13 @@ import (
 	"github.com/sirupsen/logrus"
 	appSetup "github.com/zikrykr/library-management/services/book/cmd/setup"
 	"github.com/zikrykr/library-management/services/book/config"
-	"github.com/zikrykr/library-management/services/book/constants"
-	"github.com/zikrykr/library-management/services/book/middleware"
+	bookRoutes "github.com/zikrykr/library-management/services/book/internal/books/routes"
+	"github.com/zikrykr/library-management/shared/constants"
+	"github.com/zikrykr/library-management/shared/middleware"
 )
 
 // BaseURL base url of api
-const BaseURL = "/api/v1"
+const BaseURL = "/api/v1/books"
 
 func StartServer(setupData appSetup.SetupData) {
 	conf := config.GetConfig()
@@ -36,14 +37,14 @@ func StartServer(setupData appSetup.SetupData) {
 	})
 
 	router.Use(middleware.CORSMiddleware())
-
-	// init public route
-	initPublicRoute(router, setupData.InternalApp)
-
-	// router.Use(middleware.JwtAuthMiddleware())
+	router.Use(middleware.JwtAuthMiddleware(conf.App.JWTSecret))
 
 	//Init Main APP and Route
 	initRoute(router, setupData.InternalApp)
+
+	// Init Admin Route
+	router.Use(middleware.CheckAdminRole())
+	initAdminRoute(router, setupData.InternalApp)
 
 	port := config.GetConfig().Http.Port
 	httpServer := &http.Server{
@@ -81,14 +82,11 @@ func StartServer(setupData appSetup.SetupData) {
 }
 
 func initRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
-	// r := router.Group(BaseURL)
-	// recommendationRoutes.Routes.NewRoutes(r.Group("/recommendations"), internalAppStruct.Handler.RecommendationHandler)
-	// swipeRoutes.Routes.NewRoutes(r.Group("/swipe"), internalAppStruct.Handler.SwipeHandler)
-	// authRoutes.Routes.NewRoutes(r.Group("/auth"), internalAppStruct.Handler.ProfileHandler)
-	// premiumRoutes.Routes.NewRoutes(r.Group("/premium"), internalAppStruct.Handler.PremiumHandler)
+	r := router.Group(BaseURL)
+	bookRoutes.Routes.NewRoutes(r.Group(""), internalAppStruct.Handler.BookHandler)
 }
 
-func initPublicRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
-	// r := router.Group(BaseURL)
-	// authRoutes.PublicRoutes.NewPublicRoutes(r.Group("/auth"), internalAppStruct.Handler.SignUpHandler, internalAppStruct.Handler.LoginHandler)
+func initAdminRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
+	r := router.Group(BaseURL)
+	bookRoutes.AdminRoutes.NewAdminRoutes(r.Group(""), internalAppStruct.Handler.BookHandler)
 }

@@ -15,6 +15,6 @@ type Author struct {
 	DeletedAt gorm.DeletedAt `json:"deleted_at"`
 }
 
-func (Author) GetTableName() string {
+func (Author) TableName() string {
 	return "authors"
 }

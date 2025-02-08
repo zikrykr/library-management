@@ -1,0 +1,14 @@
+BEGIN;
+
+CREATE TABLE IF NOT EXISTS book_stocks (
+  id VARCHAR(255) PRIMARY KEY,
+  book_id VARCHAR(255) NOT NULL,
+  total_stock INT NOT NULL,
+  available_stock INT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP,
+  FOREIGN KEY (book_id) REFERENCES books (id)
+);
+
+COMMIT;

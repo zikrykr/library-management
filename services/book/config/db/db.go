@@ -7,7 +7,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/zikrykr/library-management/services/book/config"
-	"github.com/zikrykr/library-management/services/book/constants"
+	"github.com/zikrykr/library-management/shared/constants"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

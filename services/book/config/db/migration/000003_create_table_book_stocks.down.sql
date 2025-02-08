@@ -1,0 +1,5 @@
+BEGIN;
+
+DROP TABLE IF EXISTS book_stocks;
+
+COMMIT;
