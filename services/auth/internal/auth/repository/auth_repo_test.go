@@ -40,7 +40,7 @@ func Test_runner(t *testing.T) {
 func (s *Suite) Test_repository_GetUserByEmail() {
 
 	var (
-		query = `SELECT * FROM "users" WHERE email = $1 AND "users"."deleted_at" IS NULL ORDER BY "users"."id" LIMIT $2`
+		query = `SELECT * FROM "users" WHERE email = $1 ORDER BY "users"."id" LIMIT $2`
 	)
 	type args struct {
 		email string

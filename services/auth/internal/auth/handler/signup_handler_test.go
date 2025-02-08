@@ -22,7 +22,7 @@ func TestSignUpHandler_SignUp(t *testing.T) {
 		mockSignUpService = mock.NewMockISignUpService(ctrl)
 
 		payloadSignUp = `{
-			"name":     "Some Name",
+			"full_name":     "Some Name",
 			"email":    "user@email.com",
 			"password": "password123"
 		}`
@@ -41,7 +41,7 @@ func TestSignUpHandler_SignUp(t *testing.T) {
 		{
 			name: "success",
 			req: func(c *gin.Context) {
-				c.Request = httptest.NewRequest(http.MethodGet, "/api/v1/auth/sign-up", bytes.NewBufferString(payloadSignUp))
+				c.Request = httptest.NewRequest(http.MethodGet, "/api/v1/auth/register", bytes.NewBufferString(payloadSignUp))
 				c.Request.Header.Set("Content-Type", "application/json")
 			},
 			mockCallFn: func() {
@@ -51,7 +51,7 @@ func TestSignUpHandler_SignUp(t *testing.T) {
 		{
 			name: "error",
 			req: func(c *gin.Context) {
-				c.Request = httptest.NewRequest(http.MethodGet, "/api/v1/auth/sign-up", bytes.NewBufferString(payloadSignUp))
+				c.Request = httptest.NewRequest(http.MethodGet, "/api/v1/auth/register", bytes.NewBufferString(payloadSignUp))
 				c.Request.Header.Set("Content-Type", "application/json")
 			},
 			mockCallFn: func() {
@@ -62,7 +62,7 @@ func TestSignUpHandler_SignUp(t *testing.T) {
 		{
 			name: "error - validation required",
 			req: func(c *gin.Context) {
-				c.Request = httptest.NewRequest(http.MethodGet, "/api/v1/auth/sign-up", bytes.NewBufferString(invalidPayload))
+				c.Request = httptest.NewRequest(http.MethodGet, "/api/v1/auth/register", bytes.NewBufferString(invalidPayload))
 				c.Request.Header.Set("Content-Type", "application/json")
 			},
 			mockCallFn: func() {},

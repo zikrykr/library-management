@@ -33,7 +33,7 @@ func TestProfileHandler_GetProfile(t *testing.T) {
 			name: "success",
 			req: func(c *gin.Context) {
 				c.Set(constants.CONTEXT_CLAIM_USER_EMAIL, "usersuccess@email.com")
-				c.Request = httptest.NewRequest(http.MethodGet, "/api/v1/auth/profile", nil)
+				c.Request = httptest.NewRequest(http.MethodGet, "/api/v1/auth/me", nil)
 				c.Request.Header.Set("Content-Type", "application/json")
 			},
 			mockCallFn: func() {
@@ -46,7 +46,7 @@ func TestProfileHandler_GetProfile(t *testing.T) {
 			name: "error",
 			req: func(c *gin.Context) {
 				c.Set(constants.CONTEXT_CLAIM_USER_EMAIL, "usererror@email.com")
-				c.Request = httptest.NewRequest(http.MethodGet, "/api/v1/auth/profile", nil)
+				c.Request = httptest.NewRequest(http.MethodGet, "/api/v1/auth/me", nil)
 				c.Request.Header.Set("Content-Type", "application/json")
 			},
 			mockCallFn: func() {
@@ -57,7 +57,7 @@ func TestProfileHandler_GetProfile(t *testing.T) {
 		{
 			name: "error - email not found on ctx",
 			req: func(c *gin.Context) {
-				c.Request = httptest.NewRequest(http.MethodGet, "/api/v1/auth/profile", nil)
+				c.Request = httptest.NewRequest(http.MethodGet, "/api/v1/auth/me", nil)
 				c.Request.Header.Set("Content-Type", "application/json")
 			},
 			mockCallFn: func() {},
