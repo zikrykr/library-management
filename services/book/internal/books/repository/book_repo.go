@@ -69,7 +69,7 @@ func (r bookRepository) GetBooks(ctx context.Context, req payload.GetBooksReq) (
 		return res, 0, err
 	}
 
-	if err := query.Offset(offset).Limit(req.Limit).Order(req.SortBy).Find(&res).Error; err != nil {
+	if err := query.Preload("BookStock").Offset(offset).Limit(req.Limit).Order(req.SortBy).Find(&res).Error; err != nil {
 		return res, totalRecords, err
 	}
 
@@ -79,7 +79,7 @@ func (r bookRepository) GetBooks(ctx context.Context, req payload.GetBooksReq) (
 func (r bookRepository) GetBookByID(ctx context.Context, id string) (model.Book, error) {
 	var res model.Book
 
-	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&res).Error; err != nil {
+	if err := r.db.Preload("BookStock").WithContext(ctx).Where("id = ?", id).First(&res).Error; err != nil {
 		return res, err
 	}
 

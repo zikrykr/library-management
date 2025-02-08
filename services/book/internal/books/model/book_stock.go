@@ -7,13 +7,13 @@ import (
 )
 
 type BookStock struct {
-	ID             string    `json:"id"`
-	BookID         string    `json:"book_id"`
-	TotalStock     int       `json:"total_stock"`
-	AvailableStock int       `json:"available_stock"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
-	DeletedAt      gorm.DeletedAt
+	ID             string         `json:"-"`
+	BookID         string         `json:"-"`
+	TotalStock     int            `json:"total_stock"`
+	AvailableStock int            `json:"available_stock"`
+	CreatedAt      time.Time      `json:"-"`
+	UpdatedAt      time.Time      `json:"updated_at"`
+	DeletedAt      gorm.DeletedAt `json:"-"`
 }
 
 func (BookStock) TableName() string {
