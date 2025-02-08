@@ -27,6 +27,7 @@ func (s ProfileService) GetProfile(ctx context.Context, userEmail string) (paylo
 		ID:       userData.ID,
 		FullName: userData.FullName,
 		Email:    userData.Email,
+		Role:     userData.Role,
 	}
 
 	return res, nil

@@ -14,6 +14,7 @@ type JWTClaims struct {
 	jwt.RegisteredClaims
 	UserID string `json:"user_id"`
 	Email  string `json:"email"`
+	Role   string `json:"role"`
 }
 
 type JWTResp struct {

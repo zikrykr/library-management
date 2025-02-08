@@ -14,11 +14,12 @@ import (
 	appSetup "github.com/zikrykr/library-management/services/author/cmd/setup"
 	"github.com/zikrykr/library-management/services/author/config"
 	"github.com/zikrykr/library-management/services/author/constants"
-	"github.com/zikrykr/library-management/services/author/middleware"
+	authorRoutes "github.com/zikrykr/library-management/services/author/internal/authors/routes"
+	"github.com/zikrykr/library-management/shared/middleware"
 )
 
 // BaseURL base url of api
-const BaseURL = "/api/v1"
+const BaseURL = "/api/v1/authors"
 
 func StartServer(setupData appSetup.SetupData) {
 	conf := config.GetConfig()
@@ -36,11 +37,8 @@ func StartServer(setupData appSetup.SetupData) {
 	})
 
 	router.Use(middleware.CORSMiddleware())
-
-	// init public route
-	initPublicRoute(router, setupData.InternalApp)
-
-	// router.Use(middleware.JwtAuthMiddleware())
+	router.Use(middleware.JwtAuthMiddleware(conf.App.JWTSecret))
+	router.Use(middleware.CheckAdminRole())
 
 	//Init Main APP and Route
 	initRoute(router, setupData.InternalApp)
@@ -81,14 +79,6 @@ func StartServer(setupData appSetup.SetupData) {
 }
 
 func initRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
-	// r := router.Group(BaseURL)
-	// recommendationRoutes.Routes.NewRoutes(r.Group("/recommendations"), internalAppStruct.Handler.RecommendationHandler)
-	// swipeRoutes.Routes.NewRoutes(r.Group("/swipe"), internalAppStruct.Handler.SwipeHandler)
-	// authRoutes.Routes.NewRoutes(r.Group("/auth"), internalAppStruct.Handler.ProfileHandler)
-	// premiumRoutes.Routes.NewRoutes(r.Group("/premium"), internalAppStruct.Handler.PremiumHandler)
-}
-
-func initPublicRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
-	// r := router.Group(BaseURL)
-	// authRoutes.PublicRoutes.NewPublicRoutes(r.Group("/auth"), internalAppStruct.Handler.SignUpHandler, internalAppStruct.Handler.LoginHandler)
+	r := router.Group(BaseURL)
+	authorRoutes.Routes.NewRoutes(r.Group("/"), internalAppStruct.Handler.AuthorHandler)
 }

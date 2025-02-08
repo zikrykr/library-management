@@ -39,6 +39,7 @@ func (s LoginService) Login(ctx context.Context, req payload.LoginReq) (payload.
 	jwtClaims := &pkg.JWTClaims{
 		UserID: userData.ID,
 		Email:  userData.Email,
+		Role:   userData.Role,
 	}
 	jwtConfig := pkg.JWTConfig{
 		AppName:   conf.App.Name,

@@ -34,6 +34,7 @@ func (s SignUpService) SignUp(ctx context.Context, req payload.SignUpReq) error 
 		ID:       id.String(),
 		FullName: req.FullName,
 		Email:    req.Email,
+		Role:     req.Role,
 	}
 
 	hashedPw, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)

@@ -13,8 +13,8 @@ import (
 	"github.com/sirupsen/logrus"
 	appSetup "github.com/zikrykr/library-management/services/auth/cmd/setup"
 	"github.com/zikrykr/library-management/services/auth/config"
-	"github.com/zikrykr/library-management/services/auth/constants"
 	authRoutes "github.com/zikrykr/library-management/services/auth/internal/auth/routes"
+	"github.com/zikrykr/library-management/shared/constants"
 	"github.com/zikrykr/library-management/shared/middleware"
 )
 
@@ -41,10 +41,13 @@ func StartServer(setupData appSetup.SetupData) {
 	// init public route
 	initPublicRoute(router, setupData.InternalApp)
 
-	router.Use(middleware.JwtAuthMiddleware(conf.App.JWTSecret))
-
 	//Init Main APP and Route
+	router.Use(middleware.JwtAuthMiddleware(conf.App.JWTSecret))
 	initRoute(router, setupData.InternalApp)
+
+	// Init Admin Route
+	router.Use(middleware.CheckAdminRole())
+	initAdminRoute(router, setupData.InternalApp)
 
 	port := config.GetConfig().Http.Port
 	httpServer := &http.Server{
@@ -89,4 +92,9 @@ func initRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct)
 func initPublicRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
 	r := router.Group(BaseURL)
 	authRoutes.PublicRoutes.NewPublicRoutes(r.Group("/auth"), internalAppStruct.Handler.SignUpHandler, internalAppStruct.Handler.LoginHandler)
+}
+
+func initAdminRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
+	r := router.Group(BaseURL)
+	authRoutes.Routes.NewAdminRoutes(r.Group("/auth"), internalAppStruct.Handler.SignUpHandler)
 }

@@ -52,6 +52,7 @@ func JwtAuthMiddleware(jwtSecret string) gin.HandlerFunc {
 
 		c.Set(constants.CONTEXT_CLAIM_USER_EMAIL, claims.Email)
 		c.Set(constants.CONTEXT_CLAIM_USER_ID, claims.UserID)
+		c.Set(constants.CONTEXT_CLAIM_USER_ROLE, claims.Role)
 		c.Set(constants.CONTEXT_CLAIM_KEY, claims)
 
 		c.Next()

@@ -8,6 +8,7 @@ import (
 type (
 	authPublicRoutes struct{}
 	authRoutes       struct{}
+	adminRoutes      struct{}
 )
 
 var (
@@ -25,4 +26,10 @@ func (r authPublicRoutes) NewPublicRoutes(router *gin.RouterGroup, signUpHandler
 func (r authRoutes) NewRoutes(router *gin.RouterGroup, profileHandler port.IProfileHandler) {
 	// get profile
 	router.GET("/me", profileHandler.GetProfile)
+}
+
+func (r authRoutes) NewAdminRoutes(router *gin.RouterGroup, signUpHandler port.ISignUpHandler) {
+	rAdmin := router.Group("/admin")
+	// register admin
+	rAdmin.POST("/register", signUpHandler.SignUpAdmin)
 }

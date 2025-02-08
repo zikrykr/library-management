@@ -4,6 +4,10 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/zikrykr/library-management/services/author/config"
 	"github.com/zikrykr/library-management/services/author/config/db"
+	authorHandler "github.com/zikrykr/library-management/services/author/internal/authors/handler"
+	"github.com/zikrykr/library-management/services/author/internal/authors/port"
+	authorRepo "github.com/zikrykr/library-management/services/author/internal/authors/repository"
+	authorService "github.com/zikrykr/library-management/services/author/internal/authors/service"
 	"gorm.io/gorm"
 )
 
@@ -21,14 +25,18 @@ type InternalAppStruct struct {
 // Repositories
 type initRepositoriesApp struct {
 	dbInstance *gorm.DB
+
+	AuthorRepo port.IAuthorRepo
 }
 
 // Services
 type initServicesApp struct {
+	AuthorService port.IAuthorService
 }
 
 // Handler
 type InitHandlerApp struct {
+	AuthorHandler port.IAuthorHandler
 }
 
 // CloseDB close connection to db
@@ -72,10 +80,14 @@ func initInternalApp(gormDB *db.GormDB) InternalAppStruct {
 func initAppRepo(gormDB *db.GormDB, initializeApp *InternalAppStruct) {
 	// Get Gorm instance
 	initializeApp.Repositories.dbInstance = gormDB.DB
+
+	initializeApp.Repositories.AuthorRepo = authorRepo.NewRepository(gormDB)
 }
 
 func initAppService(initializeApp *InternalAppStruct) {
+	initializeApp.Services.AuthorService = authorService.NewAuthorService(initializeApp.Repositories.AuthorRepo)
 }
 
 func initAppHandler(initializeApp *InternalAppStruct) {
+	initializeApp.Handler.AuthorHandler = authorHandler.NewAuthorHandler(initializeApp.Services.AuthorService)
 }
