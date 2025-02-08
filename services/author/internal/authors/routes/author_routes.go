@@ -6,14 +6,16 @@ import (
 )
 
 type (
-	authorRoutes struct{}
+	routes      struct{}
+	adminRoutes struct{}
 )
 
 var (
-	Routes authorRoutes
+	Routes      routes
+	AdminRoutes adminRoutes
 )
 
-func (r authorRoutes) NewRoutes(router *gin.RouterGroup, authorHandler port.IAuthorHandler) {
+func (r adminRoutes) NewAdminRoutes(router *gin.RouterGroup, authorHandler port.IAuthorHandler) {
 	// get authors
 	router.GET("", authorHandler.GetAuthors)
 	// get authors by id
@@ -24,4 +26,11 @@ func (r authorRoutes) NewRoutes(router *gin.RouterGroup, authorHandler port.IAut
 	router.PUT("/:id", authorHandler.UpdateAuthor)
 	// delete author
 	router.DELETE("/:id", authorHandler.DeleteAuthorByID)
+}
+
+func (r routes) NewRoutes(router *gin.RouterGroup, authorHandler port.IAuthorHandler) {
+	// get authors
+	router.GET("", authorHandler.GetAuthors)
+	// get authors by id
+	router.GET("/:id", authorHandler.GetAuthorByID)
 }
