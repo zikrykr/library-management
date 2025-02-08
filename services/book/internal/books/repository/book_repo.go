@@ -40,8 +40,9 @@ func (r repository) GetBooks(ctx context.Context, req payload.GetBooksReq) ([]mo
 	}
 
 	if req.Title != "" {
+		// use ts_query for full text search and add ILIKE for case insensitive search and incomplete words
 		fScopes = append(fScopes, func(db *gorm.DB) *gorm.DB {
-			return db.Where("to_tsvector('english', title) @@ to_tsquery(?)", req.Title)
+			return db.Where("to_tsvector('english', title) @@ plainto_tsquery(?) OR title ILIKE ?", req.Title, "%"+req.Title+"%")
 		})
 	}
 

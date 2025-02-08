@@ -23,15 +23,14 @@ func (r bookRoutes) NewRoutes(router *gin.RouterGroup, bookHandler port.IBookHan
 }
 
 func (r bookAdminRoutes) NewAdminRoutes(router *gin.RouterGroup, bookHandler port.IBookHandler) {
-	rAdmin := router.Group("/admin")
 	// create Book
-	rAdmin.POST("", bookHandler.CreateBook)
+	router.POST("", bookHandler.CreateBook)
 	// update Book
-	rAdmin.PUT("/:id", bookHandler.UpdateBook)
+	router.PUT("/:id", bookHandler.UpdateBook)
 	// delete Book
-	rAdmin.DELETE("/:id", bookHandler.DeleteBookByID)
+	router.DELETE("/:id", bookHandler.DeleteBookByID)
 	// get Books
-	rAdmin.GET("", bookHandler.GetBooks)
+	router.GET("", bookHandler.GetBooks)
 	// get Books by id
-	rAdmin.GET("/:id", bookHandler.GetBookByID)
+	router.GET("/:id", bookHandler.GetBookByID)
 }

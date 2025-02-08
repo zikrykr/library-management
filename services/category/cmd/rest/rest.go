@@ -19,7 +19,10 @@ import (
 )
 
 // BaseURL base url of api
-const BaseURL = "/api/v1/categories"
+const (
+	BaseURL      = "/api/v1/categories"
+	BaseURLAdmin = "/api/v1/admin/categories"
+)
 
 func StartServer(setupData appSetup.SetupData) {
 	conf := config.GetConfig()
@@ -41,7 +44,7 @@ func StartServer(setupData appSetup.SetupData) {
 	router.Use(middleware.CheckAdminRole())
 
 	//Init Main APP and Route
-	initRoute(router, setupData.InternalApp)
+	initAdminRoute(router, setupData.InternalApp)
 
 	port := config.GetConfig().Http.Port
 	httpServer := &http.Server{
@@ -78,7 +81,7 @@ func StartServer(setupData appSetup.SetupData) {
 	logrus.Info("Server exiting")
 }
 
-func initRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
-	r := router.Group(BaseURL)
+func initAdminRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
+	r := router.Group(BaseURLAdmin)
 	categoryRoutes.Routes.NewRoutes(r, internalAppStruct.Handler.CategoryHandler)
 }

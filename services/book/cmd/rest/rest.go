@@ -19,7 +19,10 @@ import (
 )
 
 // BaseURL base url of api
-const BaseURL = "/api/v1/books"
+const (
+	BaseURL      = "/api/v1/books"
+	BaseURLAdmin = "/api/v1/admin/books"
+)
 
 func StartServer(setupData appSetup.SetupData) {
 	conf := config.GetConfig()
@@ -87,6 +90,6 @@ func initRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct)
 }
 
 func initAdminRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
-	r := router.Group(BaseURL)
+	r := router.Group(BaseURLAdmin)
 	bookRoutes.AdminRoutes.NewAdminRoutes(r.Group(""), internalAppStruct.Handler.BookHandler)
 }
