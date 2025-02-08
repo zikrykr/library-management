@@ -80,5 +80,5 @@ func StartServer(setupData appSetup.SetupData) {
 
 func initRoute(router *gin.Engine, internalAppStruct appSetup.InternalAppStruct) {
 	r := router.Group(BaseURL)
-	authorRoutes.Routes.NewRoutes(r.Group("/"), internalAppStruct.Handler.AuthorHandler)
+	authorRoutes.Routes.NewRoutes(r, internalAppStruct.Handler.AuthorHandler)
 }

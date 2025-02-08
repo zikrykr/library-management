@@ -14,3 +14,7 @@ type Author struct {
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at"`
 }
+
+func (Author) GetTableName() string {
+	return "authors"
+}

@@ -4,6 +4,12 @@ services/*/.env
 # Ignore all .env files recursively inside subfolders of services/
 services/**/.env
 
+# Ignore tmp folders inside each service
+services/*/tmp/
+
+# Ignore all tmp folders recursively inside subfolders of services/
+services/**/tmp/
+
 # (Optional) Ignore logs, temp files, and other sensitive files
 *.log
 .env
