@@ -100,7 +100,12 @@ func (r bookRepository) CreateBook(ctx context.Context, data model.Book) error {
 }
 
 func (r bookRepository) UpdateBook(ctx context.Context, id string, data model.Book) error {
-	if err := r.db.WithContext(ctx).Model(&model.Book{}).Where("id = ?", id).Updates(data).Error; err != nil {
+	tx, exists := pkg.GetTx(ctx)
+	if !exists {
+		tx = r.db.DB
+	}
+
+	if err := tx.WithContext(ctx).Model(&model.Book{}).Where("id = ?", id).Updates(data).Error; err != nil {
 		return err
 	}
 

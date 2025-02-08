@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
 	"github.com/zikrykr/library-management/services/book/internal/books/model"
@@ -26,6 +27,10 @@ func NewBookService(db *gorm.DB, bookRepo port.IBookRepo, bookStockRepo port.IBo
 }
 
 func (s BookService) CreateBook(ctx context.Context, req payload.CreateBookReq) error {
+	if err := validateTotalStock(req.TotalStock, req.AvailableStock); err != nil {
+		return err
+	}
+
 	bookID := uuid.New().String()
 
 	data := model.Book{
@@ -68,6 +73,10 @@ func (s BookService) CreateBook(ctx context.Context, req payload.CreateBookReq) 
 }
 
 func (s BookService) UpdateBook(ctx context.Context, id string, req payload.UpdateBookReq) error {
+	if err := validateTotalStock(req.TotalStock, req.AvailableStock); err != nil {
+		return err
+	}
+
 	data := model.Book{
 		Title:         req.Title,
 		Description:   req.Description,
@@ -77,7 +86,26 @@ func (s BookService) UpdateBook(ctx context.Context, id string, req payload.Upda
 		PublishedYear: req.PublishedYear,
 	}
 
-	if err := s.bookRepository.UpdateBook(ctx, id, data); err != nil {
+	stockData := model.BookStock{
+		TotalStock:     req.TotalStock,
+		AvailableStock: req.AvailableStock,
+	}
+
+	err := s.DB.Transaction(func(tx *gorm.DB) error {
+		ctx := pkg.SetTx(ctx, tx)
+
+		if err := s.bookRepository.UpdateBook(ctx, id, data); err != nil {
+			return err
+		}
+
+		if err := s.bookStockRepository.UpdateBookStockByBookID(ctx, id, stockData); err != nil {
+			return err
+		}
+
+		return nil
+
+	})
+	if err != nil {
 		return err
 	}
 
@@ -110,6 +138,14 @@ func (s BookService) GetBookByID(ctx context.Context, id string) (model.Book, er
 func (s BookService) DeleteBookByID(ctx context.Context, id string) error {
 	if err := s.bookRepository.DeleteBookByID(ctx, id); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func validateTotalStock(totalStock, availableStock int) error {
+	if totalStock < availableStock {
+		return errors.New("total stock must be greater than or equal to available stock")
 	}
 
 	return nil

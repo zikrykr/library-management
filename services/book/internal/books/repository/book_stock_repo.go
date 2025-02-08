@@ -30,8 +30,13 @@ func (r bookStockRepository) CreateBookStock(ctx context.Context, data model.Boo
 	return nil
 }
 
-func (r bookStockRepository) UpdateBookStock(ctx context.Context, id string, data model.BookStock) error {
-	if err := r.db.WithContext(ctx).Model(&model.BookStock{}).Where("id = ?", id).Updates(data).Error; err != nil {
+func (r bookStockRepository) UpdateBookStockByBookID(ctx context.Context, bookID string, data model.BookStock) error {
+	tx, exists := pkg.GetTx(ctx)
+	if !exists {
+		tx = r.db.DB
+	}
+
+	if err := tx.WithContext(ctx).Model(&model.BookStock{}).Where("book_id = ?", bookID).Updates(data).Error; err != nil {
 		return err
 	}
 

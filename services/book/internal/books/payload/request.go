@@ -12,12 +12,14 @@ type CreateBookReq struct {
 }
 
 type UpdateBookReq struct {
-	Title         string `json:"title"`
-	Description   string `json:"description"`
-	ISBN          string `json:"isbn"`
-	AuthorID      string `json:"author_id"`
-	CategoryID    string `json:"category_id"`
-	PublishedYear int    `json:"published_year"`
+	Title          string `json:"title"`
+	Description    string `json:"description"`
+	ISBN           string `json:"isbn"`
+	AuthorID       string `json:"author_id"`
+	CategoryID     string `json:"category_id"`
+	PublishedYear  int    `json:"published_year"`
+	TotalStock     int    `json:"total_stock"`
+	AvailableStock int    `json:"available_stock"`
 }
 
 type GetBooksReq struct {

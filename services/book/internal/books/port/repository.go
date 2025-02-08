@@ -17,5 +17,5 @@ type IBookRepo interface {
 
 type IBookStockRepo interface {
 	CreateBookStock(ctx context.Context, data model.BookStock) error
-	UpdateBookStock(ctx context.Context, id string, data model.BookStock) error
+	UpdateBookStockByBookID(ctx context.Context, bookID string, data model.BookStock) error
 }
